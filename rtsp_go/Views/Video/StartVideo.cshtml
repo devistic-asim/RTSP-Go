@@ -1,0 +1,99 @@
+﻿@{
+    ViewData["Title"] = "Video Page";
+    Layout = null;
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Live RTSP Stream</title>
+    @*<script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>*@
+
+    <style>
+        .container {
+            text-align: center;
+            background: #ededed;
+            padding: 1.7rem;
+            display: flex;
+            flex-direction: column;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            -webkit-appearance: button;
+            display: inline-block;
+            margin-bottom: 0;
+            font-weight: 400;
+            text-align: center;
+            white-space: nowrap;
+            vertical-align: middle;
+            -ms-touch-action: manipulation;
+            touch-action: manipulation;
+            cursor: pointer;
+            background-image: none;
+            border: 1px solid transparent;
+            padding: 6px 12px;
+            font-size: 14px;
+            line-height: 1.42857143;
+            border-radius: 4px;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+            text-transform: none;
+            overflow: visible;
+            font: inherit;
+            margin: 0;
+        }
+
+        .btn-danger {
+            color: #fff;
+            background-color: #d9534f;
+            border-color: #d43f3a;
+        }
+    </style>
+    <script src="~/Assets/js/hls.js"></script>
+</head>
+<body>
+    <div class="container" style="text-align:center; background:#ededed;">
+
+        <div style="width:100%; height:2rem">
+            <h3>Camera : (@ViewBag.Name)</h3>
+        </div>
+
+        <br />
+        <br />
+
+        <div style="width:100%">
+            <video id="video" autoplay controls="controls" preload="auto" width="762" height="428" type='application/x-mpegURL' style="width:20%;"></video>
+        </div>
+
+        <br />
+        <br />
+
+        <div style="width:100%; height:2rem">
+                <a href="/Video/StopStream" class="btn btn-danger">Stop Stream</a>
+            </div>
+
+    </div>
+
+    <script>
+        if (Hls.isSupported()) {
+            var video = document.getElementById('video');
+            var hls = new Hls();
+            // bind them together
+            hls.attachMedia(video);
+            hls.on(Hls.Events.MEDIA_ATTACHED, function () {
+                console.log("video and hls.js are now bound together !");
+                //hls.loadSource("https://localhost:44395/Video/video");
+                hls.loadSource("/Video/getVideo");
+                hls.on(Hls.Events.MANIFEST_PARSED, function (event, data) {
+                    video.play();
+                });
+            });
+        };
+
+        //delete old files after 2 mins
+        setInterval(function () { fetch("/Video/DeleteOldFiles") }, (60/*s*/ * 1000/*ms*/));
+    </script>
+</body>
+</html>

@@ -1,0 +1,41 @@
+﻿@{
+    ViewBag.Title = "Home Page";
+}
+
+<div class="jumbotron">
+    <h2>RTSP Camera Streaming</h2>
+    @if (ViewBag.Message != null)
+    {
+        <p class="text-primary">@ViewBag.Message</p>
+    }
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <h3>Add IP Camera into session</h3>
+
+        <form class="" action="/Home/AddIP" method="post">
+            @Html.AntiForgeryToken()
+
+            <div class="form-group">
+                <input class="form-control" name="Id" value="" placeholder="ID" required />
+            </div>
+            <div class="form-group">
+                <input class="form-control" name="Name" value="" placeholder="Name" required />
+            </div>
+            <div class="form-group">
+                <input class="form-control" name="IP" value="" placeholder="IP" required />
+            </div>
+            <div class="form-group">
+                <input class="form-control" name="Port" value="" placeholder="Port" required />
+            </div>
+            <button type="submit" class="btn btn-primary">Add New Camera</button>
+        </form>
+    </div>
+    <div class="col-md-6">
+        @if (Session["cameras"] != null)
+        {
+            <a href="/Video/Index" class="btn btn-success">Go to Camera Streaming</a>
+        }
+    </div>
+</div>
